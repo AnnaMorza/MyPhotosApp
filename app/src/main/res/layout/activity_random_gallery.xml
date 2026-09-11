@@ -122,12 +122,15 @@
 
         <TextView
             android:id="@+id/fileNameText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="IMG_20240518_203305.jpg"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:gravity="center"
             android:maxLines="1"
             android:ellipsize="end"
             android:singleLine="true"
+            android:text="IMG_20240518_203305.jpg"
             android:textColor="#4CAF50"
             android:textSize="16sp"
             android:textStyle="bold" />

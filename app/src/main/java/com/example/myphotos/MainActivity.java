@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Первое показанное фото тоже считается частью истории
         history.clear();
-        history.add(allPhotos.get(0));
+        history.add(allPhotos.get(random.nextInt(allPhotos.size())));
         historyIndex = 0;
 
         displayCurrentHistoryPhoto();
@@ -139,9 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
         Uri randomUri = allPhotos.get(random.nextInt(allPhotos.size()));
 
-        while (history.size() > historyIndex + 1) {
-            history.remove(history.size() - 1);
-        }
+
 
         history.add(randomUri);
         historyIndex = history.size() - 1;

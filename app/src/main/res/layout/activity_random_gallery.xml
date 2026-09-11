@@ -14,32 +14,53 @@
 
     <!-- ==== Верхняя панель: гамбургер + заголовок ==== -->
 
-    <androidx.appcompat.widget.Toolbar
+    <LinearLayout
         android:id="@+id/toolbar"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:background="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_width="353dp"
+        android:layout_height="39dp"
 
+        android:layout_marginBottom="24dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Левая иконка (стрелка назад) -->
         <ImageView
             android:id="@+id/menuIcon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@android:drawable/ic_menu_sort_by_size" />
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:contentDescription="Back"
+            android:src="@drawable/arrow_back_24"
+            app:tint="@color/black" />
 
+        <!-- Заголовок (растягивается между иконками) -->
         <TextView
             android:id="@+id/titleText"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
             android:text="Random Photo Gallery"
+            android:textColor="@color/black"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/black" />
+            android:textStyle="bold" />
 
-    </androidx.appcompat.widget.Toolbar>
+        <!-- Правая иконка (папка) -->
+        <ImageView
+            android:id="@+id/folderIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:contentDescription="Folder"
+            android:src="@drawable/folder_24"
+            app:tint="@color/black" />
+
+    </LinearLayout>
 
     <!-- ==== Карточка с фото ==== -->
 
@@ -202,7 +223,7 @@
             app:iconPadding="4dp"
             app:iconTint="@color/white"
             app:strokeColor="@color/black"
-            app:strokeWidth="2dp" />
+            app:strokeWidth="3dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/nextButton"
@@ -233,34 +254,31 @@
     <LinearLayout
         android:id="@+id/actionRow"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:orientation="horizontal"
         android:weightSum="3"
         app:layout_constraintTop_toBottomOf="@id/buttonRow"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/deleteButton"
             style="@style/RandomButtonStyle"
-
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="6dp"
 
             app:icon="@drawable/delete_24"
+            app:iconSize="@dimen/icon_size"
 
-
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@color/red_delete"
             android:textColor="@color/red_delete"
-            app:iconTint="@color/red_delete"
+            app:iconTint="@color/white"
             app:strokeColor="@color/red_delete"
-
-
-            android:text="Delete"
 
             android:paddingStart="6dp"
             android:paddingEnd="6dp"
@@ -274,30 +292,28 @@
             android:id="@+id/likeButton"
             style="@style/RandomButtonStyle"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="match_parent"
             android:layout_marginHorizontal="6dp"
             android:layout_weight="1"
-            android:backgroundTint="@color/black"
             android:paddingStart="6dp"
             android:paddingEnd="6dp"
-            android:text="Like"
-            android:textColor="@color/white"
             android:textSize="12sp"
             app:cornerRadius="12dp"
-            app:icon="@drawable/ic_heart_outline"
-            app:iconGravity="textStart"
             app:iconPadding="4dp"
+            app:iconGravity="textStart"
+            app:icon="@drawable/ic_heart_outline"
+            app:iconSize="@dimen/icon_size"
             app:iconTint="@color/white"
-
+            android:backgroundTint="@color/black"
             app:strokeColor="@color/black"
-            app:strokeWidth="2dp" />
+            android:textColor="@color/white"
+            app:strokeWidth="3dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/viewButton"
             style="@style/RandomButtonStyle"
-
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginStart="6dp"
             android:layout_marginEnd="4dp"
@@ -305,22 +321,16 @@
             android:paddingEnd="6dp"
             app:iconPadding="4dp"
             app:strokeWidth="1dp"
-
             app:iconGravity="textEnd"
-
             android:textSize="12sp"
             app:cornerRadius="12dp"
-
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@color/eye"
             android:textColor="@color/black"
-            app:iconTint="@color/eye"
+            app:iconTint="@color/white"
             app:strokeColor="@color/eye"
 
-
-            android:text="View"
-
-            app:icon="@drawable/visibility"
-            />
+            app:iconSize="@dimen/icon_size"
+            app:icon="@drawable/visibility" />
 
     </LinearLayout>
 

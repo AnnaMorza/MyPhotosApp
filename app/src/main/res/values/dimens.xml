@@ -9,4 +9,6 @@
 
     <!-- Радиус закругления -->
     <dimen name="button_corner_radius">8dp</dimen>
+
+    <dimen name="icon_size">28dp</dimen>
 </resources>

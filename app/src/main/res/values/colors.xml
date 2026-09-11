@@ -2,6 +2,8 @@
 <resources>
     <color name="black">#1A1423</color>
     <color name="white">#FFFFFF</color>
+    <color name="red_delete">#FF0000</color>
+    <color name="eye">#4C0099</color>
 </resources>
 <!--темные цвета-->
 <!--1A1A1A-->

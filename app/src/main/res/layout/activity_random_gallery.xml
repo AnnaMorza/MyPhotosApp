@@ -244,23 +244,30 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/deleteButton"
             style="@style/RandomButtonStyle"
+
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="6dp"
+
+            app:icon="@drawable/delete_24"
+
+
             android:backgroundTint="@color/white"
+            android:textColor="@color/red_delete"
+            app:iconTint="@color/red_delete"
+            app:strokeColor="@color/red_delete"
+
+
+            android:text="Delete"
+
             android:paddingStart="6dp"
             android:paddingEnd="6dp"
-            android:text="Delete"
-            android:textColor="@color/black"
             android:textSize="12sp"
             app:cornerRadius="12dp"
-            app:icon="@android:drawable/ic_menu_delete"
             app:iconGravity="textStart"
             app:iconPadding="4dp"
-            app:iconTint="@color/black"
-            app:strokeColor="@color/black"
             app:strokeWidth="1dp" />
 
         <com.google.android.material.button.MaterialButton
@@ -288,24 +295,32 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/viewButton"
             style="@style/RandomButtonStyle"
+
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
             android:layout_marginStart="6dp"
             android:layout_marginEnd="4dp"
-            android:backgroundTint="@color/white"
             android:paddingStart="6dp"
             android:paddingEnd="6dp"
-            android:text="View"
-            android:textColor="@color/black"
+            app:iconPadding="4dp"
+            app:strokeWidth="1dp"
+
+            app:iconGravity="textEnd"
+
             android:textSize="12sp"
             app:cornerRadius="12dp"
-            app:icon="@android:drawable/ic_menu_view"
-            app:iconGravity="textEnd"
-            app:iconPadding="4dp"
-            app:iconTint="@color/black"
-            app:strokeColor="@color/black"
-            app:strokeWidth="1dp" />
+
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            app:iconTint="@color/eye"
+            app:strokeColor="@color/eye"
+
+
+            android:text="View"
+
+            app:icon="@drawable/visibility"
+            />
 
     </LinearLayout>
 

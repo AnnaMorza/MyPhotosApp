@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Отступы для кнопок -->
+    <dimen name="button_margin_top">400dp</dimen>
+    <dimen name="button_spacing">8dp</dimen>
+
+    <!-- Размеры кнопок -->
+    <dimen name="button_width">300dp</dimen>
+
+    <!-- Радиус закругления -->
+    <dimen name="button_corner_radius">8dp</dimen>
+</resources>

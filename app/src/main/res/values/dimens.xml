@@ -11,4 +11,7 @@
     <dimen name="button_corner_radius">8dp</dimen>
 
     <dimen name="icon_size">28dp</dimen>
+
+    <!--    высота нижнего ряда кнопок и кнопки random-->
+    <dimen name="small_btn_size">90dp</dimen>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.myphotos;
 
+import android.widget.ImageView;
 import android.Manifest;
 import android.content.ContentUris;
 import android.content.pm.PackageManager;
@@ -35,6 +36,10 @@ public class RandomGalleryActivity extends AppCompatActivity {
     private TextView fileNameText, dateText, historyText;
     private MaterialButton backButton, randomButton, nextButton;
 
+    // Лайки
+    private LikesManager likesManager;
+    private MaterialButton likeButton;
+
     // Все фото на устройстве (используется только для того, чтобы выбирать случайное фото)
     private final List<Uri> allPhotos = new ArrayList<>();
 
@@ -57,6 +62,14 @@ public class RandomGalleryActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         randomButton = findViewById(R.id.randomButton);
         nextButton = findViewById(R.id.nextButton);
+        likeButton = findViewById(R.id.likeButton);
+
+        // Менеджер лайков
+        likesManager = new LikesManager(this);
+
+        // Стрелка "назад" в главное меню
+        ImageView menuIcon = findViewById(R.id.menuIcon);
+        menuIcon.setOnClickListener(v -> finish());
 
         // Проверка разрешений и загрузка фото
         checkPermission();
@@ -65,6 +78,12 @@ public class RandomGalleryActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> showPreviousInHistory());
         randomButton.setOnClickListener(v -> showRandomPhoto());
         nextButton.setOnClickListener(v -> showNextInHistory());
+
+        likeButton.setOnClickListener(v -> {
+            Uri currentUri = history.get(historyIndex);
+            likesManager.toggleLike(currentUri.toString());
+            updateLikeButtonState(currentUri);
+        });
     }
 
     // === Разрешения ===
@@ -139,8 +158,6 @@ public class RandomGalleryActivity extends AppCompatActivity {
 
         Uri randomUri = allPhotos.get(random.nextInt(allPhotos.size()));
 
-
-
         history.add(randomUri);
         historyIndex = history.size() - 1;
 
@@ -202,6 +219,16 @@ public class RandomGalleryActivity extends AppCompatActivity {
 
         nextButton.setEnabled(historyIndex < history.size() - 1);
         nextButton.setAlpha(historyIndex < history.size() - 1 ? 1f : 0.4f);
+
+        // Обновляем состояние сердечка для текущего фото
+        updateLikeButtonState(uri);
+    }
+
+    // === Лайк: обновляем иконку сердечка ===
+    private void updateLikeButtonState(Uri uri) {
+        boolean liked = likesManager.isLiked(uri.toString());
+        likeButton.setIconResource(
+                liked ? R.drawable.ic_heart_filled : R.drawable.ic_heart_outline);
     }
 
     private String formatDate(long unixSeconds) {

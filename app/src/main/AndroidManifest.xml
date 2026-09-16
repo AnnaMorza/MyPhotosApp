@@ -33,6 +33,13 @@
             android:name=".RandomGalleryActivity"
             android:exported="false" />
 
+        <!-- ЭКРАН ЛАЙКОВ (открывается по кнопке Likes) -->
+        <activity
+            android:name=".LikesActivity"
+            android:exported="false" />
+
+        <activity android:name=".PhotoViewerActivity" android:exported="false" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

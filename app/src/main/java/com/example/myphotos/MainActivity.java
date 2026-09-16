@@ -28,8 +28,12 @@ public class MainActivity extends AppCompatActivity {
                 android.widget.Toast.makeText(this, "Years later — скоро", android.widget.Toast.LENGTH_SHORT).show());
         multiplayerButton.setOnClickListener(v ->
                 android.widget.Toast.makeText(this, "Multiplayer — скоро", android.widget.Toast.LENGTH_SHORT).show());
+
+
+
         likesButton.setOnClickListener(v ->
-                android.widget.Toast.makeText(this, "Likes — скоро", android.widget.Toast.LENGTH_SHORT).show());
+                startActivity(new Intent(this, LikesActivity.class)));
+
         aiButton.setOnClickListener(v ->
                 android.widget.Toast.makeText(this, "AI — скоро", android.widget.Toast.LENGTH_SHORT).show());
     }

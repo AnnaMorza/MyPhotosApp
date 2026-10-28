@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Отступы для кнопок -->
-    <dimen name="button_margin_top">400dp</dimen>
+    <dimen name="button_margin_top">500dp</dimen>
     <dimen name="button_spacing">8dp</dimen>
 
     <!-- Размеры кнопок -->

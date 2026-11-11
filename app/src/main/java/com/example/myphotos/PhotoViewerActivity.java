@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,6 +28,8 @@ public class PhotoViewerActivity extends AppCompatActivity {
 
     private LikesManager likesManager;
     private final List<Uri> photoUris = new ArrayList<>();
+
+    private boolean barsVisible = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +57,7 @@ public class PhotoViewerActivity extends AppCompatActivity {
             photoUris.add(Uri.parse(uriString));
         }
 
-        FullscreenPhotoAdapter adapter = new FullscreenPhotoAdapter(photoUris);
+        FullscreenPhotoAdapter adapter = new FullscreenPhotoAdapter(photoUris, this::toggleBars);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(startPosition, false);
 
@@ -75,6 +78,23 @@ public class PhotoViewerActivity extends AppCompatActivity {
 
         // Показываем инфо для стартового фото
         updateInfoForPosition(startPosition);
+    }
+
+    //для исчезания нижнего и верхнего баннера при нажатиии на фотку в галлереи лайков
+    private void toggleBars() {
+        barsVisible = !barsVisible;
+        setBarVisible(findViewById(R.id.topBar), barsVisible);
+        setBarVisible(findViewById(R.id.bottomBar), barsVisible);
+    }
+
+    private void setBarVisible(View bar, boolean visible) {
+        if (visible) {
+            bar.setVisibility(View.VISIBLE);
+            bar.animate().alpha(1f).setDuration(200);
+        } else {
+            bar.animate().alpha(0f).setDuration(200)
+                    .withEndAction(() -> bar.setVisibility(View.GONE));
+        }
     }
 
     private void updateInfoForPosition(int position) {

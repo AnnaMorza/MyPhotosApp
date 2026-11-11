@@ -1,5 +1,6 @@
 package com.example.myphotos;
 
+import android.content.Intent;
 import android.widget.ImageView;
 import android.Manifest;
 import android.content.ContentUris;
@@ -56,6 +57,7 @@ public class RandomGalleryActivity extends AppCompatActivity {
 
         // Инициализация UI
         imageView = findViewById(R.id.imageView);
+        imageView.setOnViewTapListener((view, x, y) -> openHistoryFullscreen());
         fileNameText = findViewById(R.id.fileNameText);
         dateText = findViewById(R.id.dateText);
         historyText = findViewById(R.id.historyText);
@@ -222,6 +224,25 @@ public class RandomGalleryActivity extends AppCompatActivity {
 
         // Обновляем состояние сердечка для текущего фото
         updateLikeButtonState(uri);
+    }
+
+    // Открытие полноэкранного просмотра истории
+    private void openHistoryFullscreen() {
+        if (history.isEmpty()) {
+            return; // Если история пуста, ничего не делаем
+        }
+
+        // 1. Преобразуем List<Uri> в ArrayList<String> для передачи через Intent
+        ArrayList<String> uriStrings = new ArrayList<>();
+        for (Uri uri : history) {
+            uriStrings.add(uri.toString());
+        }
+
+        // 2. Запускаем PhotoViewerActivity с текущей позицией
+        Intent intent = new Intent(this, PhotoViewerActivity.class);
+        intent.putStringArrayListExtra("photo_uris", uriStrings);
+        intent.putExtra("start_position", historyIndex);
+        startActivity(intent);
     }
 
     // === Лайк: обновляем иконку сердечка ===

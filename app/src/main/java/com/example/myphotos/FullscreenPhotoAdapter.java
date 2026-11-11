@@ -16,9 +16,11 @@ import java.util.List;
 public class FullscreenPhotoAdapter extends RecyclerView.Adapter<FullscreenPhotoAdapter.ViewHolder> {
 
     private final List<Uri> photoUris;
+    private final Runnable onTapListener;
 
-    public FullscreenPhotoAdapter(List<Uri> photoUris) {
+    public FullscreenPhotoAdapter(List<Uri> photoUris, Runnable onTapListener) {
         this.photoUris = photoUris;
+        this.onTapListener = onTapListener;
     }
 
     @NonNull
@@ -31,6 +33,11 @@ public class FullscreenPhotoAdapter extends RecyclerView.Adapter<FullscreenPhoto
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.photoView.setOnViewTapListener((view, x, y) -> {
+            if (onTapListener != null) {
+                onTapListener.run();
+            }
+        });
         Uri uri = photoUris.get(position);
 
         // Сбрасываем зум перед загрузкой нового фото в этот ViewHolder

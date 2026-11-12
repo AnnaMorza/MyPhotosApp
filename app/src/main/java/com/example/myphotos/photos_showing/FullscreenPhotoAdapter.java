@@ -1,49 +1,53 @@
-package com.example.myphotos;
+package com.example.myphotos.photos_showing;
 
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.myphotos.R;
+import com.github.chrisbanes.photoview.PhotoView;
 
 import java.util.List;
 
-public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> {
-
-    public interface OnPhotoClickListener {
-        void onPhotoClick(int position);
-    }
+public class FullscreenPhotoAdapter extends RecyclerView.Adapter<FullscreenPhotoAdapter.ViewHolder> {
 
     private final List<Uri> photoUris;
-    private final OnPhotoClickListener listener;
+    private final Runnable onTapListener;
 
-    public PhotoAdapter(List<Uri> photoUris, OnPhotoClickListener listener) {
+    public FullscreenPhotoAdapter(List<Uri> photoUris, Runnable onTapListener) {
         this.photoUris = photoUris;
-        this.listener = listener;
+        this.onTapListener = onTapListener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_photo_thumbnail, parent, false);
+                .inflate(R.layout.item_fullscreen_photo, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.photoView.setOnViewTapListener((view, x, y) -> {
+            if (onTapListener != null) {
+                onTapListener.run();
+            }
+        });
         Uri uri = photoUris.get(position);
+
+        // Сбрасываем зум перед загрузкой нового фото в этот ViewHolder
+        holder.photoView.setScale(1f, false);
+
         Glide.with(holder.itemView.getContext())
                 .load(uri)
-                .centerCrop()
-                .into(holder.thumbnailImage);
-
-        holder.itemView.setOnClickListener(v -> listener.onPhotoClick(position));
+                .fitCenter()
+                .into(holder.photoView);
     }
 
     @Override
@@ -52,11 +56,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView thumbnailImage;
+        PhotoView photoView;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-            thumbnailImage = itemView.findViewById(R.id.thumbnailImage);
+            photoView = itemView.findViewById(R.id.fullscreenImage);
         }
     }
 }

@@ -1,15 +1,14 @@
-package com.example.myphotos;
+package com.example.myphotos.screen_activities;
 
-import android.content.Intent;
-import android.widget.ImageView;
 import android.Manifest;
-import android.content.ContentUris;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +18,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.example.myphotos.MainActivity;
+import com.example.myphotos.R;
+import com.example.myphotos.hidden_photos.HiddensManager;
+import com.example.myphotos.likes.LikesManager;
+import com.example.myphotos.photos_showing.PhotoGetter;
+import com.example.myphotos.photos_showing.PhotoViewerActivity;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.material.button.MaterialButton;
 
@@ -28,25 +33,31 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Set;
 
 public class RandomGalleryActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 100;
 
+    // Альбом, из которого берутся фото
+    private static final String ALBUM_NAME = "testsApp";
+
     private PhotoView imageView;
     private TextView fileNameText, dateText, historyText;
     private MaterialButton backButton, randomButton, nextButton;
 
-    // Лайки
     private LikesManager likesManager;
-    private MaterialButton likeButton;
+    private HiddensManager hiddensManager;
 
-    // Все фото на устройстве (используется только для того, чтобы выбирать случайное фото)
+    private MaterialButton likeButton;
+    private MaterialButton hidePhotoButton;
+
+    // Доступные для рандома фото: все фото альбома МИНУС скрытые
     private final List<Uri> allPhotos = new ArrayList<>();
 
-    // История просмотра — именно то, что реально показывалось на экране
+    // История просмотра — то, что реально показывалось на экране
     private final List<Uri> history = new ArrayList<>();
-    private int historyIndex = -1; // текущая позиция внутри history
+    private int historyIndex = -1;
 
     private final Random random = new Random();
 
@@ -55,7 +66,6 @@ public class RandomGalleryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_random_gallery);
 
-        // Инициализация UI
         imageView = findViewById(R.id.imageView);
         imageView.setOnViewTapListener((view, x, y) -> openHistoryFullscreen());
         fileNameText = findViewById(R.id.fileNameText);
@@ -65,27 +75,28 @@ public class RandomGalleryActivity extends AppCompatActivity {
         randomButton = findViewById(R.id.randomButton);
         nextButton = findViewById(R.id.nextButton);
         likeButton = findViewById(R.id.likeButton);
+        hidePhotoButton = findViewById(R.id.viewButton);
 
-        // Менеджер лайков
         likesManager = new LikesManager(this);
+        hiddensManager = new HiddensManager(this);
 
-        // Стрелка "назад" в главное меню
         ImageView menuIcon = findViewById(R.id.menuIcon);
         menuIcon.setOnClickListener(v -> finish());
 
-        // Проверка разрешений и загрузка фото
         checkPermission();
 
-        // Обработчики кнопок
         backButton.setOnClickListener(v -> showPreviousInHistory());
         randomButton.setOnClickListener(v -> showRandomPhoto());
         nextButton.setOnClickListener(v -> showNextInHistory());
 
         likeButton.setOnClickListener(v -> {
+            if (!hasCurrentPhoto()) return;
             Uri currentUri = history.get(historyIndex);
             likesManager.toggleLike(currentUri.toString());
             updateLikeButtonState(currentUri);
         });
+
+        hidePhotoButton.setOnClickListener(v -> hideCurrentPhoto());
     }
 
     // === Разрешения ===
@@ -115,48 +126,41 @@ public class RandomGalleryActivity extends AppCompatActivity {
         }
     }
 
-    // === Загрузка списка всех фото из галереи ===
+    // === Загрузка фото альбома без скрытых ===
     private void loadPhotos() {
         allPhotos.clear();
-        allPhotos.addAll(getPhotoList());
+        history.clear();
+        historyIndex = -1;
+
+        // Набор скрытых берём один раз, а не на каждой итерации цикла
+        Set<String> hidden = hiddensManager.getAllHiddens();
+        for (Uri uri : PhotoGetter.getAllPhotos(this)) {
+            if (!hidden.contains(uri.toString())) {
+                allPhotos.add(uri);
+            }
+        }
 
         if (allPhotos.isEmpty()) {
-            Toast.makeText(this, "Фото не найдены", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Нет доступных фото", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Первое показанное фото тоже считается частью истории
-        history.clear();
         history.add(allPhotos.get(random.nextInt(allPhotos.size())));
         historyIndex = 0;
 
         displayCurrentHistoryPhoto();
     }
 
-    private List<Uri> getPhotoList() {
-        List<Uri> photoUris = new ArrayList<>();
-        Uri collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        String[] projection = {MediaStore.Images.Media._ID};
-        String sortOrder = MediaStore.Images.Media.DATE_ADDED + " DESC";
-
-        try (Cursor cursor = getContentResolver().query(
-                collection, projection, null, null, sortOrder)) {
-
-            if (cursor != null) {
-                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
-                while (cursor.moveToNext()) {
-                    long id = cursor.getLong(idColumn);
-                    Uri contentUri = ContentUris.withAppendedId(collection, id);
-                    photoUris.add(contentUri);
-                }
-            }
-        }
-        return photoUris;
+    private boolean hasCurrentPhoto() {
+        return historyIndex >= 0 && historyIndex < history.size();
     }
 
-    // === RANDOM: выбираем новое случайное фото и добавляем его в историю ===
+    // === RANDOM ===
     private void showRandomPhoto() {
-        if (allPhotos.isEmpty()) return;
+        if (allPhotos.isEmpty()) {
+            Toast.makeText(this, "Нет доступных фото", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Uri randomUri = allPhotos.get(random.nextInt(allPhotos.size()));
 
@@ -166,7 +170,7 @@ public class RandomGalleryActivity extends AppCompatActivity {
         displayCurrentHistoryPhoto();
     }
 
-    // === NEXT: идём вперёд по уже накопленной истории ===
+    // === NEXT ===
     private void showNextInHistory() {
         if (historyIndex >= history.size() - 1) {
             Toast.makeText(this, "Дальше в истории пока ничего нет", Toast.LENGTH_SHORT).show();
@@ -176,7 +180,7 @@ public class RandomGalleryActivity extends AppCompatActivity {
         displayCurrentHistoryPhoto();
     }
 
-    // === BACK: идём назад по истории ===
+    // === BACK ===
     private void showPreviousInHistory() {
         if (historyIndex <= 0) {
             Toast.makeText(this, "Это первое фото в истории", Toast.LENGTH_SHORT).show();
@@ -190,7 +194,6 @@ public class RandomGalleryActivity extends AppCompatActivity {
     private void displayCurrentHistoryPhoto() {
         Uri uri = history.get(historyIndex);
 
-        // Сбрасываем зум предыдущего фото перед показом нового
         imageView.setScale(1f, false);
 
         Glide.with(this)
@@ -222,23 +225,71 @@ public class RandomGalleryActivity extends AppCompatActivity {
         nextButton.setEnabled(historyIndex < history.size() - 1);
         nextButton.setAlpha(historyIndex < history.size() - 1 ? 1f : 0.4f);
 
-        // Обновляем состояние сердечка для текущего фото
         updateLikeButtonState(uri);
+    }
+
+    // === Скрыть текущее фото ===
+    private void hideCurrentPhoto() {
+        if (!hasCurrentPhoto()) return;
+
+        Uri hiddenUri = history.get(historyIndex);
+
+        // 1. Добавляем в скрытые
+        hiddensManager.hide(hiddenUri.toString());
+
+        // 2. Убираем из доступных для рандома
+        allPhotos.remove(hiddenUri);
+
+        // 3. Убираем из истории ВСЕ вхождения этого фото (рандом мог выдать его несколько раз).
+        //    Заодно считаем, сколько оставшихся записей было до текущей позиции:
+        //    это и есть индекс записи, которая шла сразу после скрытого фото.
+        List<Uri> newHistory = new ArrayList<>();
+        int newIndex = 0;
+        for (int i = 0; i < history.size(); i++) {
+            Uri u = history.get(i);
+            if (u.equals(hiddenUri)) continue;
+            newHistory.add(u);
+            if (i < historyIndex) newIndex++;
+        }
+        history.clear();
+        history.addAll(newHistory);
+
+        // 4. Скрыли последнее доступное фото — возвращаемся на главный экран
+        if (allPhotos.isEmpty()) {
+            Toast.makeText(this, "Это было последнее фото. Возврат на главный экран", Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+        // 5. Фото в альбоме ещё есть
+        if (history.isEmpty()) {
+            // История опустела (скрытое фото было единственным в ней) — показываем новое случайное
+            history.add(allPhotos.get(random.nextInt(allPhotos.size())));
+            historyIndex = 0;
+        } else {
+            // Показываем следующее по истории, а если скрытое было последним — предыдущее
+            historyIndex = Math.min(newIndex, history.size() - 1);
+        }
+
+        displayCurrentHistoryPhoto();
+        Toast.makeText(this, "Фото скрыто", Toast.LENGTH_SHORT).show();
     }
 
     // Открытие полноэкранного просмотра истории
     private void openHistoryFullscreen() {
         if (history.isEmpty()) {
-            return; // Если история пуста, ничего не делаем
+            return;
         }
 
-        // 1. Преобразуем List<Uri> в ArrayList<String> для передачи через Intent
         ArrayList<String> uriStrings = new ArrayList<>();
         for (Uri uri : history) {
             uriStrings.add(uri.toString());
         }
 
-        // 2. Запускаем PhotoViewerActivity с текущей позицией
         Intent intent = new Intent(this, PhotoViewerActivity.class);
         intent.putStringArrayListExtra("photo_uris", uriStrings);
         intent.putExtra("start_position", historyIndex);
@@ -255,10 +306,5 @@ public class RandomGalleryActivity extends AppCompatActivity {
     private String formatDate(long unixSeconds) {
         SimpleDateFormat sdf = new SimpleDateFormat("d MMMM yyyy", new Locale("ru"));
         return sdf.format(new Date(unixSeconds * 1000));
-    }
-
-    private int dpToPx(int dp) {
-        float density = getResources().getDisplayMetrics().density;
-        return (int) (dp * density + 0.5f);
     }
 }

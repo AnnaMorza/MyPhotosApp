@@ -1,4 +1,4 @@
-package com.example.myphotos;
+package com.example.myphotos.likes;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -27,6 +27,14 @@ public class LikesManager {
             liked.remove(uriString);
         } else {
             liked.add(uriString);
+        }
+        prefs.edit().putStringSet(KEY_LIKED_URIS, liked).apply();
+    }
+
+    public void removeLike(String uriString){
+        Set<String> liked = new HashSet<>(prefs.getStringSet(KEY_LIKED_URIS, new HashSet<>()));
+        if(liked.contains(uriString)){
+            liked.remove(uriString);
         }
         prefs.edit().putStringSet(KEY_LIKED_URIS, liked).apply();
     }

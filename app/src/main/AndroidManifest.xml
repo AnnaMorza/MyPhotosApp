@@ -30,16 +30,20 @@
 
         <!-- ЭКРАН ГАЛЕРЕИ (открывается по кнопке Random) -->
         <activity
-            android:name=".RandomGalleryActivity"
+            android:name=".screen_activities.RandomGalleryActivity"
             android:exported="false" />
 
         <!-- ЭКРАН ЛАЙКОВ (открывается по кнопке Likes) -->
         <activity
-            android:name=".LikesActivity"
+            android:name=".likes.LikesActivity"
             android:exported="false" />
 
-        <activity android:name=".PhotoViewerActivity" android:exported="false" />
+        <activity android:name=".photos_showing.PhotoViewerActivity" android:exported="false" />
 
+        <!-- ЭКРАН ЛАЙКОВ скрытых фоток -->
+        <activity
+            android:name=".hidden_photos.HiddensActivity"
+            android:exported="false" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

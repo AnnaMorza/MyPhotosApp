@@ -1,4 +1,4 @@
-package com.example.myphotos;
+package com.example.myphotos.photos_showing;
 
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.myphotos.R;
+import com.example.myphotos.likes.LikesManager;
 import com.google.android.material.button.MaterialButton;
 
 import java.text.SimpleDateFormat;

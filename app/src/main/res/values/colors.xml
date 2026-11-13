@@ -6,7 +6,10 @@
     <color name="red_delete">#FF0000</color>
     <color name="eye">#4C0099</color>
     <color name="like">#FF00FF</color>
-
+    <!-- Добавьте эти три строки внутрь <resources> в res/values/colors.xml -->
+    <color name="screen_bg">#F5F5F7</color>
+    <color name="card_dark">#1C1C1E</color>
+    <color name="overlay_dark">#99000000</color>
     <color name="random">#1F0036</color>  <!-- как black -->
 </resources>
 <!--темные цвета-->

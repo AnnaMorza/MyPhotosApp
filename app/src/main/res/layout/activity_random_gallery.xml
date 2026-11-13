@@ -5,41 +5,32 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/screen_bg"
+    android:fitsSystemWindows="true"
+    tools:context=".screen_activities.RandomGalleryActivity">
 
-    android:padding="16dp"
-
-
-    tools:context=".MainActivity">
-
-    <!-- ==== Верхняя панель: гамбургер + заголовок ==== -->
-
+    <!-- ==== Верхняя панель: назад + заголовок + папка ==== -->
     <LinearLayout
         android:id="@+id/toolbar"
-        android:layout_width="353dp"
-        android:layout_height="39dp"
-
-        android:layout_marginBottom="24dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-
-        android:background="@color/white"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Левая иконка (стрелка назад) -->
         <ImageView
             android:id="@+id/menuIcon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Back"
+            android:padding="10dp"
             android:src="@drawable/arrow_back_24"
             app:tint="@color/black" />
 
-        <!-- Заголовок (растягивается между иконками) -->
         <TextView
             android:id="@+id/titleText"
             android:layout_width="0dp"
@@ -48,292 +39,306 @@
             android:gravity="center"
             android:text="Random Photo Gallery"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
-        <!-- Правая иконка (папка) -->
         <ImageView
             android:id="@+id/folderIcon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Folder"
+            android:padding="10dp"
             android:src="@drawable/folder_24"
             app:tint="@color/black" />
 
     </LinearLayout>
 
-    <!-- ==== Карточка с фото ==== -->
-
+    <!-- ==== Карточка с фото: занимает всё свободное место между панелями ==== -->
     <androidx.cardview.widget.CardView
         android:id="@+id/photoCard"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="4dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="14dp"
         app:cardBackgroundColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintStart_toStartOf="parent"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="6dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomPanel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.55">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <!-- Внутренняя карточка скругляет углы самого фото -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp">
+            android:layout_margin="10dp"
+            app:cardBackgroundColor="@color/screen_bg"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp">
 
-            <!-- Заглушка вместо фото -->
             <com.github.chrisbanes.photoview.PhotoView
                 android:id="@+id/imageView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="#ffffff"
-                android:scaleType="fitCenter"
-                android:src="@android:drawable/ic_menu_gallery"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:contentDescription="Photo placeholder"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                android:scaleType="fitCenter"
+                android:src="@android:drawable/ic_menu_gallery" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- Счётчик истории поверх фото -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|start"
+                android:layout_margin="12dp"
+                app:cardBackgroundColor="@color/overlay_dark"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp">
+
+                <TextView
+                    android:id="@+id/historyText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="5dp"
+                    android:text="History: 177/178"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.cardview.widget.CardView>
 
     </androidx.cardview.widget.CardView>
 
-    <!-- ==== Тёмный блок с информацией о фото ==== -->
-
+    <!-- ==== Нижняя панель: инфо + две строки кнопок ==== -->
     <LinearLayout
-        android:id="@+id/infoContainer"
+        android:id="@+id/bottomPanel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/bg_info_rounded"
-        android:elevation="4dp"
         android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:paddingVertical="16dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
-        app:layout_constraintTop_toBottomOf="@id/photoCard"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <TextView
-            android:id="@+id/fileNameText"
+        <!-- Тёмная карточка с именем файла и датой -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/infoContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:gravity="center"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="IMG_20240518_203305.jpg"
-            android:textColor="#4CAF50"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="@color/card_dark"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="4dp">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="14dp">
+
+                <TextView
+                    android:id="@+id/fileNameText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="IMG_20240518_203305.jpg"
+                    android:textColor="#6FCF97"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginEnd="6dp"
+                        android:contentDescription="Date"
+                        android:src="@drawable/ic_calendar_24"
+                        app:tint="#B8B8BD" />
+
+                    <TextView
+                        android:id="@+id/dateText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="18 мая 2024"
+                        android:textColor="@color/white"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Back / Random / Next -->
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center_vertical"
+            android:id="@+id/buttonRow"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
             android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_marginEnd="6dp"
-                android:src="@android:drawable/ic_menu_my_calendar"
-                app:tint="@color/white"
-                android:contentDescription="Date" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/backButton"
+                style="@style/RandomButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:maxLines="1"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:text="Back"
+                android:textColor="@color/black"
+                android:textSize="13sp"
+                app:cornerRadius="16dp"
+                app:icon="@drawable/arrow_back_24"
+                app:iconGravity="textStart"
+                app:iconPadding="4dp"
+                app:iconTint="@color/black"
+                app:strokeColor="@color/black"
+                app:strokeWidth="1dp" />
 
-            <TextView
-                android:id="@+id/dateText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="18 мая 2024"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/randomButton"
+                style="@style/RandomButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="5dp"
+                android:layout_weight="1.3"
+                android:backgroundTint="@color/black"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:maxLines="1"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:text="Random"
                 android:textColor="@color/white"
-                android:textSize="15sp" />
+                android:textSize="13sp"
+                app:cornerRadius="16dp"
+                app:icon="@drawable/shuffle_24"
+                app:iconGravity="textStart"
+                app:iconPadding="4dp"
+                app:iconTint="@color/white"
+                app:strokeColor="@color/black"
+                app:strokeWidth="1dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/nextButton"
+                style="@style/RandomButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:maxLines="1"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:text="Next"
+                android:textColor="@color/black"
+                android:textSize="13sp"
+                app:cornerRadius="16dp"
+                app:icon="@drawable/arrow_forward_24"
+                app:iconGravity="textEnd"
+                app:iconPadding="4dp"
+                app:iconTint="@color/black"
+                app:strokeColor="@color/black"
+                app:strokeWidth="1dp" />
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/historyText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="History: 177/178"
-            android:textColor="#999999"
-            android:textSize="13sp" />
+        <!-- Delete / Like / Hide -->
+        <LinearLayout
+            android:id="@+id/actionRow"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
 
-    </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/deleteButton"
+                style="@style/RandomButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/red_delete"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                app:cornerRadius="16dp"
+                app:icon="@drawable/delete_24"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="@dimen/icon_size"
+                app:iconTint="@color/white"
+                app:strokeColor="@color/red_delete"
+                app:strokeWidth="1dp" />
 
-    <!-- ==== Ряд кнопок Back / Random / Next ==== -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/likeButton"
+                style="@style/RandomButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="5dp"
+                android:layout_weight="1.3"
+                android:backgroundTint="@color/black"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                app:cornerRadius="16dp"
+                app:icon="@drawable/ic_heart_outline"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="@dimen/icon_size"
+                app:iconTint="@color/white"
+                app:strokeColor="@color/black"
+                app:strokeWidth="1dp" />
 
-    <LinearLayout
-        android:id="@+id/buttonRow"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        android:weightSum="3"
-        app:layout_constraintTop_toBottomOf="@id/infoContainer"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/viewButton"
+                style="@style/RandomButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/eye"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                app:cornerRadius="16dp"
+                app:icon="@drawable/visibility"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="@dimen/icon_size"
+                app:iconTint="@color/white"
+                app:strokeColor="@color/eye"
+                app:strokeWidth="1dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/backButton"
-            style="@style/RandomButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="6dp"
-            android:backgroundTint="@color/white"
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp"
-            android:text="Back"
-            android:textColor="@color/black"
-            android:textSize="12sp"
-            
-            app:cornerRadius="12dp"
-            app:icon="@drawable/arrow_back_24"
-            app:iconGravity="textStart"
-            app:iconPadding="4dp"
-            app:iconTint="@color/black"
-            app:strokeColor="@color/black"
-            app:strokeWidth="1dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/randomButton"
-            style="@style/RandomButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginHorizontal="6dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/black"
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp"
-            android:text="Random"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            app:cornerRadius="12dp"
-            app:icon="@drawable/shuffle_24"
-            app:iconGravity="textStart"
-            app:iconPadding="4dp"
-            app:iconTint="@color/white"
-            app:strokeColor="@color/black"
-            app:strokeWidth="3dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/nextButton"
-            style="@style/RandomButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:layout_marginStart="6dp"
-            android:layout_marginEnd="4dp"
-            android:backgroundTint="@color/white"
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp"
-            android:text="Next"
-            android:textColor="@color/black"
-            android:textSize="12sp"
-            app:cornerRadius="12dp"
-            app:icon="@drawable/arrow_forward_24"
-            app:iconGravity="textEnd"
-            app:iconPadding="4dp"
-            app:iconTint="@color/black"
-            app:strokeColor="@color/black"
-            app:strokeWidth="1dp" />
-
-    </LinearLayout>
-
-    <!-- ==== Ряд кнопок: Delete / Like / View ==== -->
-
-    <LinearLayout
-        android:id="@+id/actionRow"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        android:weightSum="3"
-        app:layout_constraintTop_toBottomOf="@id/buttonRow"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/deleteButton"
-            style="@style/RandomButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="6dp"
-
-            app:icon="@drawable/delete_24"
-            app:iconSize="@dimen/icon_size"
-
-            android:backgroundTint="@color/red_delete"
-            android:textColor="@color/red_delete"
-            app:iconTint="@color/white"
-            app:strokeColor="@color/red_delete"
-
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp"
-            android:textSize="12sp"
-            app:cornerRadius="12dp"
-            app:iconGravity="textStart"
-            app:iconPadding="4dp"
-            app:strokeWidth="1dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/likeButton"
-            style="@style/RandomButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="6dp"
-            android:layout_weight="1"
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp"
-            android:textSize="12sp"
-            app:cornerRadius="12dp"
-            app:iconPadding="4dp"
-            app:iconGravity="textStart"
-            app:icon="@drawable/ic_heart_outline"
-            app:iconSize="@dimen/icon_size"
-            app:iconTint="@color/white"
-            android:backgroundTint="@color/black"
-            app:strokeColor="@color/black"
-            android:textColor="@color/white"
-            app:strokeWidth="3dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/viewButton"
-            style="@style/RandomButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginStart="6dp"
-            android:layout_marginEnd="4dp"
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp"
-            app:iconPadding="4dp"
-            app:strokeWidth="1dp"
-            app:iconGravity="textEnd"
-            android:textSize="12sp"
-            app:cornerRadius="12dp"
-            android:backgroundTint="@color/eye"
-            android:textColor="@color/black"
-            app:iconTint="@color/white"
-            app:strokeColor="@color/eye"
-
-            app:iconSize="@dimen/icon_size"
-            app:icon="@drawable/visibility" />
+        </LinearLayout>
 
     </LinearLayout>
 

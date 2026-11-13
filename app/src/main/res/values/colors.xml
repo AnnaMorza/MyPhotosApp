@@ -11,6 +11,19 @@
     <color name="card_dark">#1C1C1E</color>
     <color name="overlay_dark">#99000000</color>
     <color name="random">#1F0036</color>  <!-- как black -->
+
+    <!-- 10 вариантов цвета для названия фото (fileNameText) -->
+    <color name="file_name_mint">#6FCF97</color>       <!-- 1. Мятно-зеленый (текущий) -->
+    <color name="file_name_sky">#56CCF2</color>        <!-- 2. Небесно-голубой -->
+    <color name="file_name_lavender">#BB6BD9</color>   <!-- 3. Лавандовый -->
+    <color name="file_name_peach">#F2994A</color>      <!-- 4. Персиковый -->
+    <color name="file_name_coral">#EB5757</color>      <!-- 5. Светло-коралловый -->
+    <color name="file_name_gold">#F2C94C</color>       <!-- 6. Золотистый -->
+    <color name="file_name_emerald">#27AE60</color>    <!-- 7. Изумрудный -->
+    <color name="file_name_steel">#BDBDBD</color>      <!-- 8. Стальной (серый) -->
+    <color name="file_name_pink">#FF9EAA</color>       <!-- 9. Нежно-розовый -->
+    <color name="file_name_electric">#2D9CDB</color>   <!-- 10. Электрик (синий) -->
+
 </resources>
 <!--темные цвета-->
 <!--1A1A1A-->

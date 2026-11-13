@@ -6,7 +6,7 @@
     <!-- Для Android 12 и ниже -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
-
+    <uses-permission android:name="android.permission.VIBRATE" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -47,6 +47,10 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <activity android:name=".photos_showing.full_screens_logic.RandomPhotoViewerActivity" />
+        <activity android:name=".photos_showing.full_screens_logic.LikesPhotoViewerActivity" />
+        <activity android:name=".photos_showing.full_screens_logic.HiddensPhotoViewerActivity" />
     </application>
 
 </manifest>

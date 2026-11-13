@@ -1,17 +1,20 @@
 package com.example.myphotos.likes;
 
+import android.content.Intent;
 import android.util.Log;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myphotos.hidden_photos.HiddensManager;
 import com.example.myphotos.photos_showing.PhotoAdapter;
-import com.example.myphotos.photos_showing.PhotoViewerActivity;
 import com.example.myphotos.R;
+import com.example.myphotos.photos_showing.full_screens_logic.LikesPhotoViewerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,27 +42,32 @@ public class LikesActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadLikedPhotos(); // перезагружаем на случай, если лайки менялись в другом экране
+        loadLikedPhotos();
     }
 
     private void loadLikedPhotos() {
         Set<String> likedUriStrings = likesManager.getAllLiked();
+        HiddensManager hiddensManager = new HiddensManager(this);
+        Set<String> hiddenUris = hiddensManager.getAllHiddens();
 
         Log.d("LikesDebug", "Найдено лайков: " + likedUriStrings.size());
 
         likedPhotos.clear();
         for (String uriString : likedUriStrings) {
-            likedPhotos.add(Uri.parse(uriString));
+            // Добавляем в сетку лайков ТОЛЬКО если фото не скрыто
+            if (!hiddenUris.contains(uriString)) {
+                likedPhotos.add(Uri.parse(uriString));
+            }
         }
 
         if (likedPhotos.isEmpty()) {
-            emptyText.setVisibility(android.view.View.VISIBLE);
-            recyclerView.setVisibility(android.view.View.GONE);
+            emptyText.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
             return;
         }
 
-        emptyText.setVisibility(android.view.View.GONE);
-        recyclerView.setVisibility(android.view.View.VISIBLE);
+        emptyText.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
 
         PhotoAdapter adapter = new PhotoAdapter(likedPhotos, position -> {
             ArrayList<String> uriStrings = new ArrayList<>();
@@ -67,7 +75,7 @@ public class LikesActivity extends AppCompatActivity {
                 uriStrings.add(uri.toString());
             }
 
-            android.content.Intent intent = new android.content.Intent(this, PhotoViewerActivity.class);
+            Intent intent = new Intent(this, LikesPhotoViewerActivity.class);
             intent.putStringArrayListExtra("photo_uris", uriStrings);
             intent.putExtra("start_position", position);
             startActivity(intent);

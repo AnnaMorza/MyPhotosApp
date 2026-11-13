@@ -36,7 +36,7 @@ public class PhotoViewerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_photo_viewer);
+        setContentView(R.layout.activity_likes_viewer);
 
         viewPager = findViewById(R.id.viewPager);
         backIcon = findViewById(R.id.backIcon);

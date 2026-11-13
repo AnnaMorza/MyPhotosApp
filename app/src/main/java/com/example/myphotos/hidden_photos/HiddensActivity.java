@@ -1,8 +1,10 @@
 package com.example.myphotos.hidden_photos;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,9 +12,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myphotos.R;
-import com.example.myphotos.likes.LikesManager;
 import com.example.myphotos.photos_showing.PhotoAdapter;
-import com.example.myphotos.photos_showing.PhotoViewerActivity;
+import com.example.myphotos.photos_showing.full_screens_logic.HiddensPhotoViewerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,12 +37,12 @@ public class HiddensActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         loadHiddenPhotos();
     }
 
-    private void loadHiddenPhotos(){
+    private void loadHiddenPhotos() {
         Set<String> hiddensUriStrings = hiddensManager.getAllHiddens();
 
         Log.d("HiddensDebug", "Найдено скрытых фоток: " + hiddensUriStrings.size());
@@ -51,14 +52,14 @@ public class HiddensActivity extends AppCompatActivity {
             hidedPhotos.add(Uri.parse(uriString));
         }
 
-        if(hidedPhotos.isEmpty()) {
-            emptyText.setVisibility(android.view.View.VISIBLE);
-            recyclerView.setVisibility(android.view.View.GONE);
+        if (hidedPhotos.isEmpty()) {
+            emptyText.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
             return;
         }
 
-        emptyText.setVisibility(android.view.View.GONE);
-        recyclerView.setVisibility(android.view.View.VISIBLE);
+        emptyText.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
 
         PhotoAdapter adapter = new PhotoAdapter(hidedPhotos, position -> {
             ArrayList<String> uriStrings = new ArrayList<>();
@@ -66,7 +67,8 @@ public class HiddensActivity extends AppCompatActivity {
                 uriStrings.add(uri.toString());
             }
 
-            android.content.Intent intent = new android.content.Intent(this, PhotoViewerActivity.class);
+            // Заменили PhotoViewerActivity на HiddensPhotoViewerActivity
+            Intent intent = new Intent(this, HiddensPhotoViewerActivity.class);
             intent.putStringArrayListExtra("photo_uris", uriStrings);
             intent.putExtra("start_position", position);
             startActivity(intent);
